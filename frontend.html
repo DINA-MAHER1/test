@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Comparison</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .chat-container {
+            padding: 20px;
+        }
+        .chat-log {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .chat-log li {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .chat-log li:last-child {
+            border-bottom: none;
+        }
+        .input-container {
+            padding: 10px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+        }
+        .send-button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .send-button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LLM Comparison</h1>
+        </div>
+        <div class="chat-container">
+            <ul class="chat-log" id="messages">
+            </ul>
+            <div class="input-container">
+                <input type="text" id="messageText" class="input-field" autocomplete="off" placeholder="Type a message...">
+                <button class="send-button" onclick="sendMessage(event)">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var ws = new WebSocket("ws://localhost:8000/ws");
+
+        ws.onmessage = function(event) {
+            var messages = document.getElementById('messages');
+            var message = document.createElement('li');
+            var content = document.createTextNode(event.data);
+            message.appendChild(content);
+            messages.appendChild(message);
+        };
+
+        function sendMessage(event) {
+            var input = document.getElementById("messageText");
+            ws.send(input.value);
+            input.value = '';
+            event.preventDefault();
+        }
+    </script>
+</body>
+</html>
